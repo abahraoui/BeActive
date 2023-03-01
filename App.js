@@ -15,7 +15,7 @@ export default function App() {
 
   const _slow = () => Gyroscope.setUpdateInterval(1000);
   const _fast = () => Gyroscope.setUpdateInterval(16);
-  DeviceMotion.setUpdateInterval(10000);
+  DeviceMotion.setUpdateInterval(10000); //Change for printing frequncy
 
   const _subscribe = () => {
     setSubscription(
