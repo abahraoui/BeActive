@@ -13,8 +13,8 @@ export default function App() {
   const [subscription, setSubscription] = useState(null);
   const [motiondata, setmotiondata] = useState(null);
 
-  const _slow = () => Gyroscope.setUpdateInterval(1000);
-  const _fast = () => Gyroscope.setUpdateInterval(16);
+  const _slow = () => Gyroscope.setUpdateInterval(1000); //Change for updating frequncy
+  const _fast = () => Gyroscope.setUpdateInterval(16);   //Change for updating frequncy
   DeviceMotion.setUpdateInterval(10000); //Change for printing frequncy
 
   const _subscribe = () => {
