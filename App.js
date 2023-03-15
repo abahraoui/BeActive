@@ -2,13 +2,45 @@ import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Gyroscope, DeviceMotion } from "expo-sensors";
 import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+import * as Notifactions from "expo-notifactions";
+
+Notification.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldPlaySound: true,
+      shouldShowAlert: true,
+    };
+  },
+});
 
 export default function App() {
-  const [{ x, y, z }, setData] = useState({
-    x: 0,
-    y: 0,
-    z: 0,
-  });
+
+  useEffect(() => {
+    Permission.getAsync(Permission.NOTIFICATIONS)
+      .then((response) => {
+        if (response.status !== "granted") {
+          return Permission.askAsync(Permission.NOTIFICATIONS);
+        }
+        return response;
+      })
+      .then((response) => {
+        if (response.status !== "granted") {
+          return;
+        }
+      });
+  }, []);
+
+  const handleNotification = () => {
+    Notification.scheduleNotificationAsync({
+      content: {
+        title: "Local Notification",
+        body: "This is my local notification",
+      },
+      trigger: {
+        seconds: 10,
+      },
+    });
+  };
 
   const [{ alpha, beta, gamma }, setRotation] = useState({
     x: 0,
