@@ -24,6 +24,8 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   const { navigation } = _props
   const {
     authenticationStore: { logout },
+    exercises,
+    exerciseTrackerStore: { setCurrentExercise },
   } = useStores()
 
   function goNext() {
@@ -35,6 +37,16 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     onRightPress: logout,
   })
   // @demo remove-block-end
+  function goExercise() {
+    console.log("🚀 ~ file: WelcomeScreen.tsx:42 ~ goExercise ~ exercises:", exercises.length);
+    const randomExercise = exercises[Math.floor(Math.random() * exercises.length)]
+    setCurrentExercise(randomExercise)
+    navigation.push("ExerciseTracker")
+  }
+
+  function sendNotification() {
+    console.log("send notif")
+  }
 
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
@@ -62,6 +74,18 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
           onPress={goNext}
         />
         {/* @demo remove-block-end */}
+        <Button
+          testID="exercise-screen-button"
+          preset="reversed"
+          tx="welcomeScreen.toExercise"
+          onPress={goExercise}
+        />
+        <Button
+          testID="send-notification-button"
+          preset="reversed"
+          tx="welcomeScreen.sendNotification"
+          onPress={sendNotification}
+        />
       </View>
     </View>
   )

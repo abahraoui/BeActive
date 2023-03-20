@@ -25,7 +25,7 @@
     "release:android": "cd android && rm -rf app/src/main/res/drawable-* && ./gradlew assembleRelease && cd - && echo 'APK generated in ./android/app/build/outputs/apk/release/app-release.apk'",
     "clean": "npx react-native-clean-project",
     "clean-all": "npx react-native clean-project-auto",
-    "expo:start": "expo start",
+    "expo:start": "expo start --clear",
     "expo:android": "expo start --android",
     "expo:ios": "expo start --ios",
     "expo:web": "expo start --web",

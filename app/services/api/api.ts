@@ -17,6 +17,7 @@ import type {
   ApiFeedResponse, // @demo remove-current-line
 } from "./api.types"
 import type { EpisodeSnapshotIn } from "../../models/Episode" // @demo remove-current-line
+import type { ExerciseSnapshotIn } from "../../models"
 
 /**
  * Configuring the apisauce instance.
@@ -82,6 +83,31 @@ export class Api {
     }
   }
   // @demo remove-block-end
+
+  getExercises(): ExerciseSnapshotIn[] {
+    return [
+      {
+        id: "push-ups",
+        name: "Push ups",
+        description: "Place your phone on the floor in line with your head and do 10 push ups.",
+        count: 10,
+      },
+      {
+        id: "jumping-jacks",
+        name: "Jumping jacks",
+        description:
+          "Do 10 as quickly as possible. (or Do as many jumping jacks as you can in a minute?) Hold your phone in your hand.",
+        count: 10,
+      },
+      {
+        id: "walking",
+        name: "Walking",
+        description:
+          "We will measure your steps.",
+        count: 10,
+      },
+    ]
+  }
 }
 
 // Singleton instance of the API for convenience

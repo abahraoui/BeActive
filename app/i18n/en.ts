@@ -11,6 +11,12 @@ const en = {
     readyForLaunch: "Your app, almost ready for launch!",
     exciting: "(ohh, this is exciting!)",
     letsGo: "Let's go!", // @demo remove-current-line
+    toExercise: "To exercise page",
+    sendNotification: "Send notification",
+  },
+  exerciseTrackerScreen: {
+    todaysExerciseIs: "Today's exercise is",
+    startExercise: "Start exercise",
   },
   errorScreen: {
     title: "Something went wrong!",
