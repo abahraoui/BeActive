@@ -1,123 +1,98 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Gyroscope, DeviceMotion } from "expo-sensors";
-import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
-import * as Notifactions from "expo-notifactions";
+import { StyleSheet, TouchableOpacity, Text, View, Button, Platform } from "react-native";
+import * as Notifications from 'expo-notifications';
+import * as Permission from "expo-permissions";
+import * as Device from 'expo-device';
 
-Notification.setNotificationHandler({
-  handleNotification: async () => {
-    return {
-      shouldPlaySound: true,
-      shouldShowAlert: true,
-    };
-  },
-});
+import registerNNPushToken from 'native-notify';
+
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: false,
+//   }),
+// });
 
 export default function App() {
 
-  useEffect(() => {
-    Permission.getAsync(Permission.NOTIFICATIONS)
-      .then((response) => {
-        if (response.status !== "granted") {
-          return Permission.askAsync(Permission.NOTIFICATIONS);
-        }
-        return response;
-      })
-      .then((response) => {
-        if (response.status !== "granted") {
-          return;
-        }
-      });
-  }, []);
+  registerNNPushToken(6835, '3JDmzE93aUSy36djFJryGd');
+  // const [expoPushToken, setExpoPushToken] = useState('');
+  // const [notification, setNotification] = useState(false);
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
 
-  const handleNotification = () => {
-    Notification.scheduleNotificationAsync({
-      content: {
-        title: "Local Notification",
-        body: "This is my local notification",
-      },
-      trigger: {
-        seconds: 10,
-      },
-    });
-  };
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
-  const [{ alpha, beta, gamma }, setRotation] = useState({
-    x: 0,
-    y: 0,
-    z: 0,
-  });
+  //   notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+  //     setNotification(notification);
+  //   });
 
-  const [subscription, setSubscription] = useState(null);
-  const [motionData, setMotionData] = useState(null);
+  //   responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+  //     console.log(response);
+  //   });
 
-  const _slow = () => Gyroscope.setUpdateInterval(1000); //Change for updating frequncy
-  const _fast = () => Gyroscope.setUpdateInterval(16); //Change for updating frequncy
-  DeviceMotion.setUpdateInterval(100); //Change for printing frequncy
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(notificationListener.current);
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //   };
+  // }, []);
 
-  const _subscribe = () => {
-    setSubscription(
-      Gyroscope.addListener((gyroscopeData) => {
-        setData(gyroscopeData);
-      })
-    );
-    setSubscription(
-      DeviceMotion.addListener((motionData) => {
-        // console.log(motionData);
-        setMotionData(motionData);
-        setRotation(motionData.rotation);
-      })
-    );
-  };
+  // useEffect(() => {
+  //   Permission.getAsync(Permission.NOTIFICATIONS)
+  //     .then((response) => {
+  //       if (response.status !== "granted") {
+  //         return Permission.askAsync(Permission.NOTIFICATIONS);
+  //       }
+  //       return response;
+  //     })
+  //     .then((response) => {
+  //       if (response.status !== "granted") {
+  //         return;
+  //       }
+  //     });
+  // }, []);
 
-  //https://www.w3resource.com/javascript-exercises/javascript-math-exercise-34.php
-  function radians_to_degrees(radians) {
-    const pi = Math.PI;
-    return radians * (180 / pi);
-  }
 
-  const _unsubscribe = () => {
-    subscription && subscription.remove();
-    setSubscription(null);
-  };
-
-  useEffect(() => {
-    _subscribe();
-    return () => _unsubscribe();
-  }, []);
+  // const handleNotification = () => {
+  //   Notification.scheduleNotificationAsync({
+  //     content: {
+  //       title: "Local Notification",
+  //       body: "This is my local notification",
+  //     },
+  //     trigger: {
+  //       seconds: 10,
+  //     },
+  //   });
+  // };
 
   return (
     <View style={styles.container}>
       {/* <Text style={styles.text}> motion: {motiondata}</Text> */}
-      <Text style={styles.text}>Rotation:</Text>
-      <Text style={styles.text}>
-        x: {Math.round(radians_to_degrees(alpha) + 180)}
-      </Text>
-      <Text style={styles.text}>
-        y: {Math.round(radians_to_degrees(beta) + 180)}
-      </Text>
-      <Text style={styles.text}>
-        z: {Math.round(radians_to_degrees(gamma) + 180)}
-      </Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={subscription ? _unsubscribe : _subscribe}
-          style={styles.button}
-        >
-          <Text>{subscription ? "On" : "Off"}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={_slow}
-          style={[styles.button, styles.middleButton]}
-        >
-          <Text>Slow</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={_fast} style={styles.button}>
-          <Text>Fast</Text>
-        </TouchableOpacity>
+      {/* <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-around',
+      }}> */}
+        {/* <Button title={"Open Notification"} onPress={handleNotification} /> */}
+      {/* <Text>Your expo push token: {expoPushToken}</Text>
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Title: {notification && notification.request.content.title} </Text>
+        <Text>Body: {notification && notification.request.content.body}</Text>
+        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
       </View>
-      <Text>Open up App.js to start working on your Cum</Text>
-      <StatusBar style="auto" />
+      <Button
+        title="Press to schedule a notification"
+        onPress={async () => {
+          await schedulePushNotification();
+        }}
+      />
+    </View> */}
+    <Text>I hate this</Text>
     </View>
   );
 }
@@ -149,3 +124,46 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
+
+// async function schedulePushNotification() {
+//   await Notifications.scheduleNotificationAsync({
+//     content: {
+//       title: "You've got mail! 📬",
+//       body: 'Here is the notification body',
+//       data: { data: 'goes here' },
+//     },
+//     trigger: { seconds: 2 },
+//   });
+// }
+
+// async function registerForPushNotificationsAsync() {
+//   let token;
+
+//   if (Platform.OS === 'android') {
+//     await Notifications.setNotificationChannelAsync('default', {
+//       name: 'default',
+//       importance: Notifications.AndroidImportance.MAX,
+//       vibrationPattern: [0, 250, 250, 250],
+//       lightColor: '#FF231F7C',
+//     });
+//   }
+
+//   if (Device.isDevice) {
+//     const { status: existingStatus } = await Notifications.getPermissionsAsync();
+//     let finalStatus = existingStatus;
+//     if (existingStatus !== 'granted') {
+//       const { status } = await Notifications.requestPermissionsAsync();
+//       finalStatus = status;
+//     }
+//     if (finalStatus !== 'granted') {
+//       alert('Failed to get push token for push notification!');
+//       return;
+//     }
+//     token = (await Notifications.getExpoPushTokenAsync()).data;
+//     console.log(token);
+//   } else {
+//     alert('Must use physical device for Push Notifications');
+//   }
+
+//   return token;
+// }
