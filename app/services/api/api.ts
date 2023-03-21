@@ -18,6 +18,7 @@ import type {
 } from "./api.types"
 import type { EpisodeSnapshotIn } from "../../models/Episode" // @demo remove-current-line
 import type { ExerciseSnapshotIn } from "../../models"
+import { ExerciseResult } from "../../screens"
 
 /**
  * Configuring the apisauce instance.
@@ -102,11 +103,35 @@ export class Api {
       {
         id: "walking",
         name: "Walking",
-        description:
-          "We will measure your steps.",
+        description: "We will measure your steps.",
         count: 10,
       },
     ]
+  }
+
+  async getSocialResults(): Promise<ExerciseResult[]> {
+    const response = await fetch("https://randomuser.me/api/?results=10&inc=name,picture&noinfo")
+
+    if (!response.ok) return []
+
+    try {
+      const rawData = await response.json()
+      const exercises = this.getExercises().map((e) => e.id)
+      const randomExercise = () => exercises[Math.floor(Math.random() * exercises.length)]
+
+      const results: ExerciseResult[] = rawData.results.map((raw: any) => ({
+        name: `${raw.name.first}`,
+        exercise: randomExercise(),
+        score: Math.floor(Math.random() * 100),
+        time: new Date().setHours(Math.random() * 24, Math.random() * 60),
+        image: raw.picture.large,
+      }))
+      
+
+      return results
+    } catch (e) {
+      return []
+    }
   }
 }
 

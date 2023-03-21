@@ -37,7 +37,7 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
 
     function submitExercise() {
       console.log("submit")
-      addScore(exerciseTrackerStore.currentCount, exercise.id)
+      addScore(exerciseTrackerStore.currentCount, exercise.id, new Date())
       navigation.push("SocialFeed")
     }
 
