@@ -1,10 +1,11 @@
-import React, { FC } from "react"
+import React, { FC, useLayoutEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { View, Image, ViewStyle, ImageStyle } from "react-native"
+import { View, Image, ViewStyle, ImageStyle, TextStyle } from "react-native"
 import { AppStackScreenProps } from "../navigators"
 import { Button, Text, Screen } from "../components"
 import { spacing } from "../theme"
-import { useStores } from "../models"
+import { ExerciseTrackingState, useStores } from "../models"
+import JumpingJacks from "../models/components/JumpingJacks"
 
 const images = {
   "jumping-jacks": require(`../../assets/images/jumping-jacks.png`),
@@ -16,36 +17,96 @@ interface ExerciseTrackerScreenProps extends AppStackScreenProps<"ExerciseTracke
 
 export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
   function ExerciseTrackerScreen(_props) {
-    const { exerciseTrackerStore } = useStores()
+    const {
+      exerciseTrackerStore,
+      profileStore: { addScore },
+    } = useStores()
     const { navigation } = _props
 
     const exercise = exerciseTrackerStore.currentExercise
-    if (!exercise) return <Text text={"asd"} />
+
+    useLayoutEffect(() => {
+      exerciseTrackerStore.setProp("state", ExerciseTrackingState.NOT_STARTED)
+      exerciseTrackerStore.resetCurrentCount()
+    }, [])
 
     function startExercise() {
       console.log("start")
+      exerciseTrackerStore.setProp("state", ExerciseTrackingState.RUNNING)
     }
+
+    function submitExercise() {
+      console.log("submit")
+      addScore(exerciseTrackerStore.currentCount, exercise.id)
+      navigation.push("SocialFeed")
+    }
+
     const imgSrc = images[exercise.id]
+
+    function exerciseComponent() {
+      switch (exercise.id) {
+        case "jumping-jacks":
+          return (
+            <JumpingJacks
+              key={exercise.id}
+              duration={6}
+              onComplete={() => {
+                alert(
+                  "Exercise complete, you did " +
+                    exerciseTrackerStore.currentCount +
+                    " jumping jacks!",
+                )
+                exerciseTrackerStore.setProp("state", ExerciseTrackingState.ENDED)
+              }}
+            />
+          )
+        default:
+          return <Text text={"started unknown workout"} />
+      }
+    }
 
     return (
       <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={container}>
         <View style={topContainer}>
-          <Text
-            testID="welcome-heading"
-            tx="exerciseTrackerScreen.todaysExerciseIs"
-            preset="subheading"
-          />
-          <Text testID="exercise-name" text={exercise.name} preset="heading" />
-          <Text testID="exercise-name" text={exercise.description} />
-          <Text testID="exercise-name" text={`Count: ${exercise.count}`} />
-          <Image style={exerciseImage} source={imgSrc} resizeMode="contain" />
-          <Button
-            testID="exercise-screen-button"
-            preset="filled"
-            tx="exerciseTrackerScreen.startExercise"
-            onPress={startExercise}
-          />
-          <Button text="Go back" onPress={() => navigation.navigate("Welcome")} />
+          {!exercise ? (
+            <Text text={"Failed to load exercise!"} />
+          ) : (
+            <>
+              <Text
+                testID="welcome-heading"
+                tx="exerciseTrackerScreen.todaysExerciseIs"
+                preset="subheading"
+              />
+              <Text testID="exercise-name" text={exercise.name} preset="heading" />
+              <Text testID="exercise-desc" text={exercise.description} />
+              {/* <Text testID="exercise-count" text={`Count: ${exercise.count}`} style={resultText} /> */}
+              {/* <Text
+                testID="exercise-name"
+                text={`Count from store: ${exerciseTrackerStore.currentCount}`}
+              /> */}
+              <Image style={exerciseImage} source={imgSrc} resizeMode="contain" />
+              {exerciseTrackerStore.state === ExerciseTrackingState.NOT_STARTED ? (
+                <Button
+                  testID="exercise-screen-button"
+                  preset="filled"
+                  tx="exerciseTrackerScreen.startExercise"
+                  onPress={startExercise}
+                />
+              ) : exerciseTrackerStore.state === ExerciseTrackingState.RUNNING ? (
+                exerciseComponent()
+              ) : (
+                <View style={bottomContainer}>
+                  <Text
+                    text={`You did ${exerciseTrackerStore.currentCount} repetitions! Good job!`}
+                    size="xl"
+                    weight="bold"
+                    style={resultText}
+                  />
+                  <Button preset="filled" text="Continue" onPress={submitExercise} />
+                </View>
+              )}
+            </>
+          )}
         </View>
       </Screen>
     )
@@ -66,3 +127,9 @@ const topContainer: ViewStyle = {
   flexShrink: 1,
   padding: spacing.large,
 }
+const resultText: TextStyle = {
+  textAlign: "center",
+  padding: spacing.medium,
+}
+
+const bottomContainer: ViewStyle = {}

@@ -96,7 +96,7 @@ export class Api {
         id: "jumping-jacks",
         name: "Jumping jacks",
         description:
-          "Do 10 as quickly as possible. (or Do as many jumping jacks as you can in a minute?) Hold your phone in your hand.",
+          "Do as many jumping jacks as you can in a minute. Hold your phone in your hand while doing the exercise.",
         count: 10,
       },
       {

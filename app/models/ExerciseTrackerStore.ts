@@ -2,19 +2,38 @@ import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 import { Exercise, ExerciseModel } from "./Exercise"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 
+export enum ExerciseTrackingState {
+  NOT_STARTED = "NOT_STARTED",
+  RUNNING = "RUNNING",
+  ENDED = "ENDED",
+}
+
 export const ExerciseTrackerStoreModel = types
   .model("ExerciseTrackerStore")
   .props({
     currentExercise: types.maybe(types.reference(ExerciseModel)),
+    currentCount: types.optional(types.number, -1),
+    state: types.optional(
+      types.enumeration<ExerciseTrackingState>([
+        ExerciseTrackingState.NOT_STARTED,
+        ExerciseTrackingState.RUNNING,
+        ExerciseTrackingState.ENDED,
+      ]),
+      ExerciseTrackingState.NOT_STARTED,
+    ),
   })
   .actions(withSetPropAction)
   .actions((self) => ({
     setCurrentExercise(exercise: Exercise) {
       self.currentExercise = exercise
     },
+    incrementCurrentCount() {
+      self.currentCount += 1
+    },
+    resetCurrentCount() {
+      self.currentCount = 0
+    },
   }))
-  .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
-  .actions((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface ExerciseTrackerStore extends Instance<typeof ExerciseTrackerStoreModel> {}
 export interface ExerciseTrackerStoreSnapshotOut
