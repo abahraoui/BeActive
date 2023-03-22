@@ -69,16 +69,18 @@ export const SocialFeedScreen: FC<StackScreenProps<AppStackScreenProps<"SocialFe
                 backgroundColor={colors.palette.accent100}
               />
             ) : (
-              <Text text="No recorded exercise yet." />
+              <Text text="You haven't recorded your score yet." />
             )
           }
           stickySectionHeadersEnabled
           renderItem={({ item, index }) => (
-            <UserScore
-              key={index}
-              exercise={rootStore.exerciseById(item.exercise)?.name}
-              {...item}
-            />
+            <View>
+              <UserScore
+                key={index}
+                {...item}
+                exercise={rootStore.exerciseById(item.exercise)?.name}
+              />
+            </View>
           )}
         />
       </Screen>

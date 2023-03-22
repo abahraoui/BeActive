@@ -21,8 +21,6 @@ export const JumpingJacks: FC<JumpingJacksProps> = observer(function (props) {
   } = useStores()
   const [subscription, setSubscription] = useState<Subscription>(null)
   const [sound, setSound] = React.useState<Audio.Sound>()
-  const [speed, setSpeed] = React.useState<number>(-1)
-//   const [{ x, y, z }, setData] = useState({ x: 0, y: 0, z: 0 })
 
   const _subscribe = () => {
     // basically react native shake but I needed control of the shakethreshold
@@ -42,7 +40,6 @@ export const JumpingJacks: FC<JumpingJacksProps> = observer(function (props) {
           previousUpdate = currentTime
           const speed =
             (Math.abs(x + y + z - previousX - previousY - previousZ) / difference) * 10000
-          setSpeed(speed)
           if (speed > shakeThreshold) {
 			incrementCurrentCount()
             console.log("new currentCount", currentCount)
@@ -96,7 +93,6 @@ export const JumpingJacks: FC<JumpingJacksProps> = observer(function (props) {
         preset="subheading"
         size="xxl"
       />
-      <Text text={`speed: ${speed}`} preset="bold" />
       <Text text={`Jumping jacks: ${currentCount}`} preset="bold" />
     </View>
   )

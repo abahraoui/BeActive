@@ -49,7 +49,7 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
           return (
             <JumpingJacks
               key={exercise.id}
-              duration={6}
+              duration={60}
               onComplete={() => {
                 alert(
                   "Exercise complete, you did " +

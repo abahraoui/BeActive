@@ -16,7 +16,7 @@ export const RootStoreModel = types
   })
   .actions(withSetPropAction)
   .actions((self) => ({
-    afterCreate: () => self.setProp("exercises", api.getExercises()),
+    loadExercises: () => self.setProp("exercises", api.getExercises()),
   }))
   .views((self) => ({
     exerciseById(id: string) {
