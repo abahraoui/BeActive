@@ -1,6 +1,3 @@
-console.log("inhere");
-console.log("inhere");
-
 import React, { useEffect, useState, useRef } from 'react';
 import {StyleSheet, Text, View, Dimensions, Platform, Pressable, Button} from 'react-native';
 import { Camera } from 'expo-camera';
@@ -15,6 +12,7 @@ import {
 import Svg, { Circle } from 'react-native-svg';
 import { ExpoWebGLRenderingContext } from 'expo-gl';
 import { CameraType } from 'expo-camera/build/Camera.types';
+import {cast} from "@tensorflow/tfjs";
 
 // tslint:disable-next-line: variable-name
 const TensorCamera = cameraWithTensors(Camera);
@@ -49,7 +47,7 @@ const AUTO_RENDER = false;
 const LOAD_MODEL_FROM_BUNDLE = false;
 
 export default function PushUp() {
-    console.log("Inhere");
+
     const cameraRef = useRef(null);
     const [tfReady, setTfReady] = useState(false);
     const [model, setModel] = useState<posedetection.PoseDetector>();
@@ -64,7 +62,7 @@ export default function PushUp() {
     const base_right = useRef(0);
     const atBasePos = useRef(true);
     const [cameraType, setCameraType] = useState<CameraType>(
-        Camera.Constants.Type.front
+        CameraType.front
     );
     // Use `useRef` so that changing it won't trigger a re-render.
     //
@@ -136,9 +134,12 @@ export default function PushUp() {
         updatePreview: () => void,
         gl: ExpoWebGLRenderingContext
     ) => {
+
         const loop = async () => {
             // Get the tensor and run pose detection.
+            console.log("b4");
             const imageTensor = images.next().value as tf.Tensor3D;
+
 
             const startTs = Date.now();
             const poses = await model!.estimatePoses(
@@ -146,7 +147,7 @@ export default function PushUp() {
                 undefined,
                 Date.now()
             );
-
+            console.log("after");
             const latency = Date.now() - startTs;
             setFps(Math.floor(1000 / latency));
             setPoses(poses);
@@ -174,7 +175,7 @@ export default function PushUp() {
                 .filter((k) => (k.score ?? 0) > MIN_KEYPOINT_SCORE)
                 .map((k) => {
                     // Flip horizontally on android or when using back camera on iOS.
-                    const flipX = IS_ANDROID || cameraType === Camera.Constants.Type.back;
+                    const flipX = IS_ANDROID || cameraType === CameraType.back;
                     const x = flipX ? getOutputTensorWidth() - k.x : k.x;
                     const y = k.y;
                     const cx =
@@ -218,17 +219,17 @@ export default function PushUp() {
             >
                 <Text>
                     Switch to{' '}
-                    {cameraType === Camera.Constants.Type.front ? 'back' : 'front'} camera
+                    {cameraType === CameraType.front ? 'back' : 'front'} camera
                 </Text>
             </View>
         );
     };
 
     const handleSwitchCameraType = () => {
-      if (cameraType === Camera.Constants.Type.front) {
-            setCameraType(Camera.Constants.Type.back);
+      if (cameraType === CameraType.front) {
+            setCameraType(CameraType.back);
         } else {
-            setCameraType(Camera.Constants.Type.front);
+            setCameraType(CameraType.front);
         }
     };
 
@@ -271,9 +272,9 @@ export default function PushUp() {
             case ScreenOrientation.Orientation.PORTRAIT_DOWN:
                 return 180;
             case ScreenOrientation.Orientation.LANDSCAPE_LEFT:
-                return cameraType === Camera.Constants.Type.front ? 270 : 90;
+                return cameraType === CameraType.front ? 270 : 90;
             case ScreenOrientation.Orientation.LANDSCAPE_RIGHT:
-                return cameraType === Camera.Constants.Type.front ? 90 : 270;
+                return cameraType === CameraType.front ? 90 : 270;
             default:
                 return 0;
         }
@@ -341,12 +342,12 @@ export default function PushUp() {
                     resizeHeight={getOutputTensorHeight()}
                     resizeDepth={3}
                     rotation={getTextureRotationAngleInDegrees()}
-                    onReady={handleCameraStream}
-                />
+                    onReady={handleCameraStream} useCustomShadersToResize={false} cameraTextureWidth={0}
+                    cameraTextureHeight={0}                />
 
 
                 {countReps()}
-
+                {renderPose()}
 
 
                 {renderCameraTypeSwitcher()}
@@ -356,7 +357,7 @@ export default function PushUp() {
 }
 //{renderFps()}
 // <Button  onPress={countReps} title={"yo"}>  </Button> //
-// {renderPose()}
+//
 const styles = StyleSheet.create({
     containerPortrait: {
         position: 'relative',
