@@ -18,6 +18,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     profileStore: { logout, name },
     exercises,
     exerciseTrackerStore: { setCurrentExercise, setProp },
+    loadExercises,
   } = useStores()
 
   function goNext() {
@@ -30,6 +31,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   })
   // @demo remove-block-end
   function goExercise() {
+    loadExercises()
     const randomExercise = exercises[Math.floor(Math.random() * exercises.length)]
     setProp("state", ExerciseTrackingState.NOT_STARTED)
     setCurrentExercise(randomExercise)

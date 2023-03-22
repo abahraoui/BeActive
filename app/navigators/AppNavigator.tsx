@@ -13,6 +13,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { StackScreenProps } from "@react-navigation/stack"
 import { observer } from "mobx-react-lite"
+import registerNNPushToken from "native-notify"
 import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
@@ -93,6 +94,9 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
+  registerNNPushToken(6835, "3JDmzE93aUSy36djFJryGd") // ALL THATS NEEDED OMG :SOB: :SOB:
+  // This uses a web service, the login will be made available in discord!
+  
   return (
     <NavigationContainer
       ref={navigationRef}
