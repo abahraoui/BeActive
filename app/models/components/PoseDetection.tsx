@@ -10,6 +10,7 @@ import { bundleResourceIO, cameraWithTensors } from "@tensorflow/tfjs-react-nati
 import Svg, { Circle } from "react-native-svg"
 import { ExpoWebGLRenderingContext } from "expo-gl"
 import { CameraType } from "expo-camera/build/Camera.types"
+import PushUp from "./PushUp";
 
 // tslint:disable-next-line: variable-name
 const TensorCamera = cameraWithTensors(Camera)
@@ -44,7 +45,7 @@ const AUTO_RENDER = true
 // Whether to load model from app bundle (true) or through network (false).
 const LOAD_MODEL_FROM_BUNDLE = true
 
-export default function PoseDetection() {
+export default function PoseDetection(props) {
   const cameraRef = useRef(null)
   const [tfReady, setTfReady] = useState(false)
   const [model, setModel] = useState<posedetection.PoseDetector>()
@@ -52,6 +53,8 @@ export default function PoseDetection() {
   const [fps, setFps] = useState(0)
   const [orientation, setOrientation] = useState<ScreenOrientation.Orientation>()
   const [cameraType, setCameraType] = useState<CameraType>(CameraType.front)
+  const [exerciseType, setExerciseType] = useState("PUSHUP")
+  const count = useRef(0)
   // Use `useRef` so that changing it won't trigger a re-render.
   //
   // - null: unset (initial value).
@@ -271,13 +274,15 @@ export default function PoseDetection() {
           cameraTextureHeight={0}
         />
         {renderPose()}
-        {renderFps()}
+
+        <PushUp poses={poses??[]}  />
         {renderCameraTypeSwitcher()}
+
       </View>
     )
   }
 }
-
+//
 const styles = StyleSheet.create({
   camera: {
     height: "100%",
