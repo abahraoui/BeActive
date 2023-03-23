@@ -1,11 +1,12 @@
 import { observer } from "mobx-react-lite"
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { Button, Text } from "../components"
 import { ExerciseTrackingState, useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useHeader } from "../utils/useHeader"
+import { getPushDataObject } from 'native-notify';
 
 interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
 
@@ -20,19 +21,35 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     exerciseTrackerStore: { setCurrentExercise, setProp },
     loadExercises,
   } = useStores()
-
   function goNext() {
     navigation.navigate("Demo", { screen: "DemoShowroom" })
   }
-
+  
   useHeader({
     rightTx: "common.logOut",
     onRightPress: logout,
   })
+
+  notifactionExercise()
+  function notifactionExercise(){
+    let notificationbody = getPushDataObject();
+    console.log(notificationbody.ex)
+    if (notificationbody.ex){
+      const randomExercise = exercises[notificationbody.ex]
+      console.log(randomExercise)
+      setProp("state", ExerciseTrackingState.NOT_STARTED)
+      setCurrentExercise(randomExercise)
+      navigation.push("ExerciseTracker")
+    }
+  }
+
   // @demo remove-block-end
   function goExercise() {
     loadExercises()
-    const randomExercise = exercises[Math.floor(Math.random() * exercises.length)]
+    const randomnum = Math.floor(Math.random() * exercises.length)
+    console.log(JSON.stringify(exercises))
+    const randomExercise = exercises[randomnum]
+    console.log(randomExercise)
     setProp("state", ExerciseTrackingState.NOT_STARTED)
     setCurrentExercise(randomExercise)
     navigation.push("ExerciseTracker")
@@ -40,6 +57,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
 
   function sendNotification() {
     console.log("send notif")
+    // notifactionExercise()
   }
 
   return (
@@ -82,12 +100,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         preset="reversed"
         text="Social feed"
         onPress={() => navigation.push("SocialFeed")}
-      />
-      <Button
-        style={buttonMargin}
-        preset="reversed"
-        text="pose page"
-        onPress={() => navigation.push("PoseDetection")}
       />
     </View>
   )
