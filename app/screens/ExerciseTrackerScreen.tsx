@@ -11,7 +11,8 @@ import PoseDetection from "../models/components/PoseDetection"
 const images = {
   "jumping-jacks": require(`../../assets/images/jumping-jacks.png`),
   "push-ups": require(`../../assets/images/pushups.jpg`),
-  walking: require(`../../assets/images/walking.jpg`),
+  "walking": require(`../../assets/images/walking.jpg`),
+    "squat" : require(`../../assets/images/squat.JPG`),
 }
 
 interface ExerciseTrackerScreenProps extends AppStackScreenProps<"ExerciseTracker"> {}
@@ -78,7 +79,7 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
     }
 
     const hideImage =
-      exercise.id === "push-ups" && exerciseTrackerStore.state === ExerciseTrackingState.RUNNING
+      exercise.id === "pushUps" && exerciseTrackerStore.state === ExerciseTrackingState.RUNNING
 
     return (
       <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={container}>
