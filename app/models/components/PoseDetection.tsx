@@ -12,6 +12,7 @@ import { ExpoWebGLRenderingContext } from "expo-gl"
 import { CameraType } from "expo-camera/build/Camera.types"
 import { PushUp } from "./PushUp"
 import CountDownTimer from "./Timer"
+import { Squat } from "./Squat"
 
 // tslint:disable-next-line: variable-name
 const TensorCamera = cameraWithTensors(Camera)
@@ -47,7 +48,6 @@ const AUTO_RENDER = true
 // Whether to load model from app bundle (true) or through network (false).
 const LOAD_MODEL_FROM_BUNDLE = true
 
-
 interface PoseDetectionProps {
   exerciseType: string
   onComplete: () => void
@@ -61,7 +61,6 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
   const [poses, setPoses] = useState<posedetection.Pose[]>()
   const [orientation, setOrientation] = useState<ScreenOrientation.Orientation>()
   const [cameraType, setCameraType] = useState<CameraType>(CameraType.front)
-  const [exerciseType, setExerciseType] = useState("PUSHUP")
   // Use `useRef` so that changing it won't trigger a re-render.
   //
   // - null: unset (initial value).
@@ -72,6 +71,7 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
   useEffect(() => {
     async function prepare() {
       rafId.current = null
+      console.log(props.exerciseType)
 
       // Set initial orientation.
       const curOrientation = await ScreenOrientation.getOrientationAsync()
@@ -95,9 +95,26 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
         enableSmoothing: true,
       }
       if (LOAD_MODEL_FROM_BUNDLE) {
-        const modelJson = require("../../../offline_model/model.json")
-        const modelWeights1 = require("../../../offline_model/group1-shard1of2.bin")
-        const modelWeights2 = require("../../../offline_model/group1-shard2of2.bin")
+        let modelJson: any = ""
+        let modelWeights1: any = ""
+        let modelWeights2: any = ""
+        switch (props.exerciseType) {
+          case "push-ups":
+            modelJson = require("./ml_model/push-ups_model.json")
+            modelWeights1 = require("./ml_model/push-ups_weights1of2.bin")
+            modelWeights2 = require("./ml_model/push-ups_weights2of2.bin")
+            break
+          case "squats":
+            modelJson = require("./ml_model/squats_model.json")
+            modelWeights1 = require("./ml_model/squats_weights1of2.bin")
+            modelWeights2 = require("./ml_model/squats_weights2of2.bin")
+            break
+          default:
+            modelJson = require("./ml_model/push-ups_model.json")
+            modelWeights1 = require("./ml_model/push-ups_weights1of2.bin")
+            modelWeights2 = require("./ml_model/push-ups_weights2of2.bin")
+        }
+
         movenetModelConfig.modelUrl = bundleResourceIO(modelJson, [modelWeights1, modelWeights2])
       }
       const model = await posedetection.createDetector(
@@ -111,7 +128,7 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
     }
 
     prepare()
-  }, [])
+  }, [props.exerciseType])
 
   useEffect(() => {
     // Called when the app is unmounted.
@@ -247,6 +264,18 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
     console.log("🚀 exerciseFinished")
     if (typeof props?.onComplete === "function") props.onComplete()
   }
+  function startExercise() {
+    switch (props.exerciseType) {
+      case "push-ups":
+        return <PushUp poses={poses ?? []} />
+
+      case "squats":
+        return <Squat poses={poses ?? []} />
+
+      default:
+        return <Text>ERROR: No exercise selected</Text>
+    }
+  }
 
   if (!tfReady) {
     return (
@@ -275,10 +304,12 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
           cameraTextureHeight={0}
         />
         {renderPose()}
+        {startExercise()}
 
-        <PushUp poses={poses ?? []} />
         {renderCameraTypeSwitcher()}
+
         <CountDownTimer
+          style={styles.timerStyle}
           duration={props.duration}
           onComplete={() => exerciseFinished()}
           preset="subheading"
@@ -333,6 +364,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 30,
   },
+  timerStyle: { textAlign: "center" },
 })
 
 export default PoseDetection
