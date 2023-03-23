@@ -9,3 +9,4 @@ export * from "./ErrorScreen/ErrorBoundary"
 // export other screens here
 export * from "./ExerciseTrackerScreen"
 export * from "./SocialFeedScreen"
+export * from "../models/components/PoseDetection"

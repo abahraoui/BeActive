@@ -83,6 +83,12 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         text="Social feed"
         onPress={() => navigation.push("SocialFeed")}
       />
+      <Button
+        style={buttonMargin}
+        preset="reversed"
+        text="pose page"
+        onPress={() => navigation.push("PoseDetection")}
+      />
     </View>
   )
 })

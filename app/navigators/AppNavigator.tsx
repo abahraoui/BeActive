@@ -18,6 +18,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
 import { useStores } from "../models"
+import PoseDetection from "../models/components/PoseDetection"
 import { LoginScreen, SocialFeedScreen, WelcomeScreen } from "../screens"
 import { ExerciseTrackerScreen } from "../screens/ExerciseTrackerScreen"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator" // @demo remove-current-line
@@ -43,6 +44,7 @@ export type AppStackParamList = {
   // 🔥 Your screens go here
   ExerciseTracker: undefined
   SocialFeed: undefined
+  PoseDetection: undefined
 }
 
 /**
@@ -77,6 +79,7 @@ const AppStack = observer(function AppStack() {
           {/* @demo remove-block-end */}
           <Stack.Screen name="ExerciseTracker" component={ExerciseTrackerScreen} />
           <Stack.Screen name="SocialFeed" component={SocialFeedScreen} />
+          <Stack.Screen name="PoseDetection" component={PoseDetection} />
         </>
       ) : (
         <>
