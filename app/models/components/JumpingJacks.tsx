@@ -41,7 +41,7 @@ export const JumpingJacks: FC<JumpingJacksProps> = observer(function (props) {
           const speed =
             (Math.abs(x + y + z - previousX - previousY - previousZ) / difference) * 10000
           if (speed > shakeThreshold) {
-			incrementCurrentCount()
+            incrementCurrentCount()
             console.log("new currentCount", currentCount)
             playSound()
           }

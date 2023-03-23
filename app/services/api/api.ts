@@ -90,7 +90,8 @@ export class Api {
       {
         id: "push-ups",
         name: "Push ups",
-        description: "Place your phone on the floor in line with your head and do 10 push ups.",
+        description:
+          "Place your phone next to a wall and be as close to it as you can. Make sure your shoulders are visible for the camera. Do as many pushups as you can in one minute.",
         count: 10,
       },
       {
@@ -126,7 +127,6 @@ export class Api {
         time: new Date().setHours(Math.random() * 24, Math.random() * 60),
         image: raw.picture.large,
       }))
-      
 
       return results
     } catch (e) {

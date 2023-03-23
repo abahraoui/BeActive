@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
-import { StyleSheet, Text, View, Dimensions, Platform } from "react-native"
-
+import { StyleSheet, View, Dimensions, Platform } from "react-native"
+import { Text } from "../../components/Text"
 import { Camera } from "expo-camera"
 
 import * as tf from "@tensorflow/tfjs"
@@ -10,7 +10,8 @@ import { bundleResourceIO, cameraWithTensors } from "@tensorflow/tfjs-react-nati
 import Svg, { Circle } from "react-native-svg"
 import { ExpoWebGLRenderingContext } from "expo-gl"
 import { CameraType } from "expo-camera/build/Camera.types"
-import PushUp from "./PushUp";
+import { PushUp } from "./PushUp"
+import CountDownTimer from "./Timer"
 
 // tslint:disable-next-line: variable-name
 const TensorCamera = cameraWithTensors(Camera)
@@ -26,7 +27,8 @@ const IS_IOS = Platform.OS === "ios"
 //
 // This might not cover all cases.
 const CAM_PREVIEW_WIDTH = Dimensions.get("window").width
-const CAM_PREVIEW_HEIGHT = CAM_PREVIEW_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4)
+const ASPECT_RATIO = IS_IOS ? 9 / 16 : 3 / 4
+const CAM_PREVIEW_HEIGHT = CAM_PREVIEW_WIDTH / ASPECT_RATIO
 
 // The score threshold for pose detection results.
 const MIN_KEYPOINT_SCORE = 0.3
@@ -37,7 +39,7 @@ const MIN_KEYPOINT_SCORE = 0.3
 // preprocess the input (crop, resize, etc). For best result, use the size that
 // doesn't distort the image.
 const OUTPUT_TENSOR_WIDTH = 180
-const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4)
+const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / ASPECT_RATIO
 
 // Whether to auto-render TensorCamera preview.
 const AUTO_RENDER = true
@@ -45,16 +47,21 @@ const AUTO_RENDER = true
 // Whether to load model from app bundle (true) or through network (false).
 const LOAD_MODEL_FROM_BUNDLE = true
 
-export default function PoseDetection(props) {
+
+interface PoseDetectionProps {
+  exerciseType: string
+  onComplete: () => void
+  duration: number
+}
+
+export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
   const cameraRef = useRef(null)
   const [tfReady, setTfReady] = useState(false)
   const [model, setModel] = useState<posedetection.PoseDetector>()
   const [poses, setPoses] = useState<posedetection.Pose[]>()
-  const [fps, setFps] = useState(0)
   const [orientation, setOrientation] = useState<ScreenOrientation.Orientation>()
   const [cameraType, setCameraType] = useState<CameraType>(CameraType.front)
   const [exerciseType, setExerciseType] = useState("PUSHUP")
-  const count = useRef(0)
   // Use `useRef` so that changing it won't trigger a re-render.
   //
   // - null: unset (initial value).
@@ -125,10 +132,7 @@ export default function PoseDetection(props) {
       // Get the tensor and run pose detection.
       const imageTensor = images.next().value as tf.Tensor3D
 
-      const startTs = Date.now()
       const poses = await model!.estimatePoses(imageTensor, undefined, Date.now())
-      const latency = Date.now() - startTs
-      setFps(Math.floor(1000 / latency))
       setPoses(poses)
       tf.dispose([imageTensor])
 
@@ -178,14 +182,6 @@ export default function PoseDetection(props) {
     } else {
       return <View></View>
     }
-  }
-
-  const renderFps = () => {
-    return (
-      <View style={styles.fpsContainer}>
-        <Text>FPS: {fps}</Text>
-      </View>
-    )
   }
 
   const renderCameraTypeSwitcher = () => {
@@ -247,6 +243,11 @@ export default function PoseDetection(props) {
     }
   }
 
+  function exerciseFinished() {
+    console.log("🚀 exerciseFinished")
+    if (typeof props?.onComplete === "function") props.onComplete()
+  }
+
   if (!tfReady) {
     return (
       <View style={styles.loadingMsg}>
@@ -275,56 +276,24 @@ export default function PoseDetection(props) {
         />
         {renderPose()}
 
-        <PushUp poses={poses??[]}  />
+        <PushUp poses={poses ?? []} />
         {renderCameraTypeSwitcher()}
-
+        <CountDownTimer
+          duration={props.duration}
+          onComplete={() => exerciseFinished()}
+          preset="subheading"
+          size="xxl"
+        />
       </View>
     )
   }
 }
-//
+
 const styles = StyleSheet.create({
   camera: {
     height: "100%",
     width: "100%",
     zIndex: 1,
-  },
-  containerLandscape: {
-    height: CAM_PREVIEW_WIDTH,
-    marginLeft: Dimensions.get("window").height / 2 - CAM_PREVIEW_HEIGHT / 2,
-    position: "relative",
-    width: CAM_PREVIEW_HEIGHT,
-  },
-  containerPortrait: {
-    height: CAM_PREVIEW_HEIGHT,
-    marginTop: Dimensions.get("window").height / 2 - CAM_PREVIEW_HEIGHT / 2,
-    position: "relative",
-    width: CAM_PREVIEW_WIDTH,
-  },
-  loadingMsg: {
-    alignItems: "center",
-    height: "100%",
-    justifyContent: "center",
-    position: "absolute",
-    width: "100%",
-  },
-  svg: {
-    height: "100%",
-    position: "absolute",
-    width: "100%",
-    zIndex: 30,
-  },
-  // eslint-disable-next-line react-native/no-color-literals, react-native/sort-styles
-  fpsContainer: {
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, .7)",
-    borderRadius: 2,
-    left: 10,
-    padding: 8,
-    position: "absolute",
-    top: 10,
-    width: 80,
-    zIndex: 20,
   },
   // eslint-disable-next-line react-native/no-color-literals
   cameraTypeSwitcher: {
@@ -336,6 +305,34 @@ const styles = StyleSheet.create({
     right: 10,
     top: 10,
     width: 180,
-    zIndex: 20,
+    zIndex: 40,
+  },
+  containerLandscape: {
+    height: CAM_PREVIEW_WIDTH,
+    marginLeft: Dimensions.get("window").height / 2 - CAM_PREVIEW_HEIGHT / 2,
+    position: "relative",
+    width: CAM_PREVIEW_HEIGHT,
+  },
+  containerPortrait: {
+    // height: CAM_PREVIEW_HEIGHT,
+    aspectRatio: ASPECT_RATIO,
+    // marginTop: spacing.medium,
+    // position: "relative",
+    // width: CAM_PREVIEW_WIDTH,
+  },
+  loadingMsg: {
+    alignItems: "center",
+    // height: "100%",
+    justifyContent: "center",
+    // position: "absolute",
+    // width: "100%",
+  },
+  svg: {
+    height: "100%",
+    position: "absolute",
+    width: "100%",
+    zIndex: 30,
   },
 })
+
+export default PoseDetection

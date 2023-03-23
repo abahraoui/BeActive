@@ -6,6 +6,7 @@ import { Button, Text, Screen } from "../components"
 import { spacing } from "../theme"
 import { ExerciseTrackingState, useStores } from "../models"
 import JumpingJacks from "../models/components/JumpingJacks"
+import PoseDetection from "../models/components/PoseDetection"
 
 const images = {
   "jumping-jacks": require(`../../assets/images/jumping-jacks.png`),
@@ -60,10 +61,24 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
               }}
             />
           )
+        case "push-ups":
+          return (
+            <PoseDetection
+              onComplete={() => {
+                alert(`Exercise complete, you did ${exerciseTrackerStore.currentCount} push ups!`)
+                exerciseTrackerStore.setProp("state", ExerciseTrackingState.ENDED)
+              }}
+              duration={60}
+              exerciseType={exercise.id}
+            />
+          )
         default:
           return <Text text={"started unknown workout"} />
       }
     }
+
+    const hideImage =
+      exercise.id === "push-ups" && exerciseTrackerStore.state === ExerciseTrackingState.RUNNING
 
     return (
       <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={container}>
@@ -84,7 +99,7 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
                 testID="exercise-name"
                 text={`Count from store: ${exerciseTrackerStore.currentCount}`}
               /> */}
-              <Image style={exerciseImage} source={imgSrc} resizeMode="contain" />
+              {!hideImage && <Image style={exerciseImage} source={imgSrc} resizeMode="contain" />}
               {exerciseTrackerStore.state === ExerciseTrackingState.NOT_STARTED ? (
                 <Button
                   testID="exercise-screen-button"
