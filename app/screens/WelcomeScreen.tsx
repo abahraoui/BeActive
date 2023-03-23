@@ -13,6 +13,7 @@ interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
 export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(
   _props, // @demo remove-current-line
 ) {
+  
   // @demo remove-block-start
   const { navigation } = _props
   const {
@@ -20,22 +21,24 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     exercises,
     exerciseTrackerStore: { setCurrentExercise, setProp },
     loadExercises,
+    exerciseById
   } = useStores()
-  function goNext() {
-    navigation.navigate("Demo", { screen: "DemoShowroom" })
-  }
+
+  let pushDataObject = getPushDataObject();
   
   useHeader({
     rightTx: "common.logOut",
     onRightPress: logout,
   })
 
-  notifactionExercise()
-  function notifactionExercise(){
-    let notificationbody = getPushDataObject();
-    console.log(notificationbody.ex)
-    if (notificationbody.ex){
-      const randomExercise = exercises[notificationbody.ex]
+  React.useLayoutEffect(() => {
+    notifactionExercise()
+  }, [pushDataObject]);
+    
+    function notifactionExercise(){
+    console.log("pushDataObject", pushDataObject)
+    if (pushDataObject.exerciseId){
+      const randomExercise = exerciseById(pushDataObject.exerciseId)
       console.log(randomExercise)
       setProp("state", ExerciseTrackingState.NOT_STARTED)
       setCurrentExercise(randomExercise)
@@ -55,10 +58,36 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     navigation.push("ExerciseTracker")
   }
 
-  function sendNotification() {
+  async  function sendNotification() {
     console.log("send notif")
-    // notifactionExercise()
+    
+    loadExercises()
+    const randomnum = Math.floor(Math.random() * exercises.length)
+    console.log(JSON.stringify(exercises))
+    const randomExercise = exercises[randomnum]
+    console.log(randomExercise)
+
+    fetch("https://app.nativenotify.com/api/notification", {
+      "headers": {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-GB,en;q=0.9,hu;q=0.8,hu-HU;q=0.7,es-ES;q=0.6,es;q=0.5,en-US;q=0.4",
+        "content-type": "application/json;charset=UTF-8",
+        "sec-ch-ua": "\"Google Chrome\";v=\"111\", \"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"111\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin"
+      },
+      "referrer": "https://app.nativenotify.com/in-app",
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "body": JSON.stringify({"appId":"6835","title":"Time for your daily exercise","body":"Today's exercise is "+randomExercise.name.toLowerCase,"dateSent":"3-23-2023 10:54PM","pushData":JSON.stringify({exerciseId:randomExercise.id}),"bigPictureURL":""}),
+      "method": "POST",
+      "mode": "cors",
+      "credentials": "include"
+    });
   }
+
 
   return (
     <View style={$container}>
@@ -72,15 +101,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         text="This is the dashboard, you can simulate sending a notification from here."
         size="md"
       />
-      {/* @demo remove-block-start */}
-      <Button
-        style={buttonMargin}
-        testID="next-screen-button"
-        preset="reversed"
-        text={"Go to Demo"}
-        onPress={goNext}
-      />
-      {/* @demo remove-block-end */}
       <Button
         style={buttonMargin}
         testID="exercise-screen-button"

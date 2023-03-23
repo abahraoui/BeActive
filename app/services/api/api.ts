@@ -110,19 +110,19 @@ export class Api {
     ]
   }
 
-  async getSocialResults(): Promise<ExerciseResult[]> {
+  async getSocialResults(exercise?: ExerciseSnapshotIn): Promise<ExerciseResult[]> {
     const response = await fetch("https://randomuser.me/api/?results=10&inc=name,picture&noinfo")
 
+    const exercises = this.getExercises().map((e) => e.id)
+    const chosenExercise = exercise ?? exercises[Math.floor(Math.random() * exercises.length)]
     if (!response.ok) return []
 
     try {
       const rawData = await response.json()
-      const exercises = this.getExercises().map((e) => e.id)
-      const randomExercise = () => exercises[Math.floor(Math.random() * exercises.length)]
 
       const results: ExerciseResult[] = rawData.results.map((raw: any) => ({
         name: `${raw.name.first}`,
-        exercise: randomExercise(),
+        exercise: chosenExercise,
         score: Math.floor(Math.random() * 100),
         time: new Date().setHours(Math.random() * 24, Math.random() * 60),
         image: raw.picture.large,

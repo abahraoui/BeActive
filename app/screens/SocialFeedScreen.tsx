@@ -15,10 +15,11 @@ import { AutoImage, Card, EmptyState, Screen, Text } from "../components"
 import { useStores } from "../models"
 import { colors, spacing } from "../theme"
 import { api } from "../services/api"
+import type { ExerciseSnapshotIn } from "../models/Exercise"
 
 export interface ExerciseResult {
   name: string
-  exercise: string
+  exercise: ExerciseSnapshotIn
   score: number
   time: Date
   image: string
@@ -35,7 +36,7 @@ export const SocialFeedScreen: FC<StackScreenProps<AppStackScreenProps<"SocialFe
     React.useEffect(() => {
       ;(async function load() {
         setIsLoading(true)
-        setSocialResults(await api.getSocialResults())
+        setSocialResults(await api.getSocialResults(lastExercise?.exerciseId ? rootStore.exerciseById(lastExercise.exerciseId) : undefined))
         setIsLoading(false)
       })()
     }, [rootStore])
@@ -78,7 +79,7 @@ export const SocialFeedScreen: FC<StackScreenProps<AppStackScreenProps<"SocialFe
               <UserScore
                 key={index}
                 {...item}
-                exercise={rootStore.exerciseById(item.exercise)?.name}
+                exercise={item.exercise?.name}
               />
             </View>
           )}
