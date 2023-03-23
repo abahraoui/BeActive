@@ -39,10 +39,10 @@ const OUTPUT_TENSOR_WIDTH = 180
 const OUTPUT_TENSOR_HEIGHT = OUTPUT_TENSOR_WIDTH / (IS_IOS ? 9 / 16 : 3 / 4)
 
 // Whether to auto-render TensorCamera preview.
-const AUTO_RENDER = false
+const AUTO_RENDER = true
 
 // Whether to load model from app bundle (true) or through network (false).
-const LOAD_MODEL_FROM_BUNDLE = false
+const LOAD_MODEL_FROM_BUNDLE = true
 
 export default function PoseDetection() {
   const cameraRef = useRef(null)
