@@ -81,7 +81,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
       },
       "referrer": "https://app.nativenotify.com/in-app",
       "referrerPolicy": "strict-origin-when-cross-origin",
-      "body": JSON.stringify({"appId":"6835","title":"Time for your daily exercise","body":"Today's exercise is "+randomExercise.name.toLowerCase,"dateSent":"3-23-2023 10:54PM","pushData":JSON.stringify({exerciseId:randomExercise.id}),"bigPictureURL":""}),
+      "body": JSON.stringify({"appId":"6835","title":"Time for your daily exercise","body":"Today's exercise is "+randomExercise.name.toLowerCase(),"dateSent":"3-23-2023 10:54PM","pushData":JSON.stringify({exerciseId:randomExercise.id}),"bigPictureURL":""}),
       "method": "POST",
       "mode": "cors",
       "credentials": "include"
