@@ -12,6 +12,7 @@ import { ExpoWebGLRenderingContext } from "expo-gl"
 import { CameraType } from "expo-camera/build/Camera.types"
 import { PushUp } from "./PushUp"
 import CountDownTimer from "./Timer"
+import { Squat } from "./Squat"
 
 // tslint:disable-next-line: variable-name
 const TensorCamera = cameraWithTensors(Camera)
@@ -47,7 +48,6 @@ const AUTO_RENDER = true
 // Whether to load model from app bundle (true) or through network (false).
 const LOAD_MODEL_FROM_BUNDLE = true
 
-
 interface PoseDetectionProps {
   exerciseType: string
   onComplete: () => void
@@ -61,15 +61,12 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
   const [poses, setPoses] = useState<posedetection.Pose[]>()
   const [orientation, setOrientation] = useState<ScreenOrientation.Orientation>()
   const [cameraType, setCameraType] = useState<CameraType>(CameraType.front)
-  const [exerciseType, setExerciseType] = useState(props.exerciseType)
   // Use `useRef` so that changing it won't trigger a re-render.
   //
   // - null: unset (initial value).
   // - 0: animation frame/loop has been canceled.
   // - >0: animation frame has been scheduled.
   const rafId = useRef<number | null>(null)
-
-
 
   useEffect(() => {
     async function prepare() {
@@ -98,10 +95,10 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
         enableSmoothing: true,
       }
       if (LOAD_MODEL_FROM_BUNDLE) {
-        let modelJson = ""
-        let modelWeights1 = ""
-        let modelWeights2 = ""
-        switch (exerciseType){
+        let modelJson: any = ""
+        let modelWeights1: any = ""
+        let modelWeights2: any = ""
+        switch (props.exerciseType) {
           case "push-ups":
             modelJson = require("./ml_model/push-ups_model.json")
             modelWeights1 = require("./ml_model/push-ups_weights1of2.bin")
@@ -118,7 +115,6 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
             modelWeights2 = require("./ml_model/push-ups_weights2of2.bin")
         }
 
-
         movenetModelConfig.modelUrl = bundleResourceIO(modelJson, [modelWeights1, modelWeights2])
       }
       const model = await posedetection.createDetector(
@@ -132,7 +128,7 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
     }
 
     prepare()
-  }, [exerciseType])
+  }, [props.exerciseType])
 
   useEffect(() => {
     // Called when the app is unmounted.
@@ -268,18 +264,17 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
     console.log("🚀 exerciseFinished")
     if (typeof props?.onComplete === "function") props.onComplete()
   }
-  function startExercise(){
-    switch(exerciseType){
+  function startExercise() {
+    switch (props.exerciseType) {
       case "push-ups":
         return <PushUp poses={poses ?? []} />
 
-      case "squat":
-        return <PushUp poses={poses ?? []} />
+      case "squats":
+        return <Squat poses={poses ?? []} />
 
       default:
         return <Text>ERROR: No exercise selected</Text>
     }
-
   }
 
   if (!tfReady) {
@@ -312,7 +307,9 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
         {startExercise()}
 
         {renderCameraTypeSwitcher()}
+
         <CountDownTimer
+          style={styles.timerStyle}
           duration={props.duration}
           onComplete={() => exerciseFinished()}
           preset="subheading"
@@ -367,6 +364,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 30,
   },
+  timerStyle: { textAlign: "center" },
 })
 
 export default PoseDetection

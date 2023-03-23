@@ -91,7 +91,7 @@ export class Api {
         id: "push-ups",
         name: "Push ups",
         description:
-          "Place your phone next to a wall and be as close to it as you can. Make sure your shoulders are visible for the camera. Do as many pushups as you can in one minute.",
+          "Place your phone next to a wall and be as close to it as you can. Make sure your shoulders are visible to the camera. Do as many pushups as you can in one minute.",
         count: 10,
       },
       {
@@ -105,6 +105,13 @@ export class Api {
         id: "walking",
         name: "Walking",
         description: "We will measure your steps.",
+        count: 10,
+      },
+      {
+        id: "squats",
+        name: "Squats",
+        description:
+          "Place your phone next to a wall and be as close to it as you can. Make sure your hips are visible to the camera. Do as many squats as you can in one minute.",
         count: 10,
       },
     ]

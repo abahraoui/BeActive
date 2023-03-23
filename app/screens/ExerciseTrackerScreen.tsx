@@ -11,8 +11,8 @@ import PoseDetection from "../models/components/PoseDetection"
 const images = {
   "jumping-jacks": require(`../../assets/images/jumping-jacks.png`),
   "push-ups": require(`../../assets/images/pushups.jpg`),
-  "walking": require(`../../assets/images/walking.jpg`),
-    "squat" : require(`../../assets/images/squat.JPG`),
+  walking: require(`../../assets/images/walking.jpg`),
+  squats: require(`../../assets/images/squat.JPG`),
 }
 
 interface ExerciseTrackerScreenProps extends AppStackScreenProps<"ExerciseTracker"> {}
@@ -63,10 +63,15 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
             />
           )
         case "push-ups":
+        case "squats":
+          // eslint-disable-next-line no-case-declarations
+          const exerciseName = exercise.id === "push-ups" ? "push ups" : "squats"
           return (
             <PoseDetection
               onComplete={() => {
-                alert(`Exercise complete, you did ${exerciseTrackerStore.currentCount} push ups!`)
+                alert(
+                  `Exercise complete, you did ${exerciseTrackerStore.currentCount} ${exerciseName}!`,
+                )
                 exerciseTrackerStore.setProp("state", ExerciseTrackingState.ENDED)
               }}
               duration={60}
@@ -79,7 +84,8 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
     }
 
     const hideImage =
-      exercise.id === "pushUps" && exerciseTrackerStore.state === ExerciseTrackingState.RUNNING
+      ["pushUps", "squats"].includes(exercise.id) &&
+      exerciseTrackerStore.state === ExerciseTrackingState.RUNNING
 
     return (
       <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={container}>
