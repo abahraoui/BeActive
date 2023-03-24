@@ -7,10 +7,12 @@ import { spacing } from "../theme"
 import { ExerciseTrackingState, useStores } from "../models"
 import JumpingJacks from "../models/components/JumpingJacks"
 import PoseDetection from "../models/components/PoseDetection"
+import RussianTwists from "../models/components/RussianTwists"
 
 const images = {
   "jumping-jacks": require(`../../assets/images/jumping-jacks.png`),
   "push-ups": require(`../../assets/images/pushups.jpg`),
+  "russian-twists": require(`../../assets/images/russian-twist.jpg`),
   walking: require(`../../assets/images/walking.jpg`),
   squats: require(`../../assets/images/squat.JPG`),
 }
@@ -62,6 +64,21 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
               }}
             />
           )
+        case "russian-twists":
+            return (
+              <RussianTwists
+                key={exercise.id}
+                duration={60}
+                onComplete={() => {
+                  alert(
+                    "Exercise complete, you did " +
+                      exerciseTrackerStore.currentCount +
+                      " russian twists!",
+                  )
+                  exerciseTrackerStore.setProp("state", ExerciseTrackingState.ENDED)
+                }}
+              />
+            )
         case "push-ups":
         case "squats":
           // eslint-disable-next-line no-case-declarations
@@ -79,7 +96,7 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
             />
           )
         default:
-          return <Text text={"started unknown workout"} />
+          return <Text text={"Unknown workout"} />
       }
     }
 

@@ -102,16 +102,16 @@ export class Api {
         count: 10,
       },
       {
-        id: "walking",
-        name: "Walking",
-        description: "We will measure your steps.",
-        count: 10,
-      },
-      {
         id: "squats",
         name: "Squats",
         description:
-          "Place your phone next to a wall and be as close to it as you can. Make sure your hips are visible to the camera. Do as many squats as you can in one minute.",
+        "Place your phone next to a wall and be as close to it as you can. Make sure your hips are visible to the camera. Do as many squats as you can in one minute.",
+        count: 10,
+      },
+      {
+        id: "russian-twists",
+        name: "Russian twists",
+        description: "Have your phone in your hands in front of your chest. Turn only your torso to the left, and then to the right.",
         count: 10,
       },
     ]
