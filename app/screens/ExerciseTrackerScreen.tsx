@@ -100,7 +100,7 @@ export const ExerciseTrackerScreen: FC<ExerciseTrackerScreenProps> = observer(
     }
 
     const hideImage =
-      ["pushUps", "squats"].includes(exercise.id) &&
+      ["push-ups", "squats"].includes(exercise.id) &&
       exerciseTrackerStore.state === ExerciseTrackingState.RUNNING
 
     return (
