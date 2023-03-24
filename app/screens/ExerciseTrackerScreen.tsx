@@ -13,7 +13,7 @@ const images = {
   "jumping-jacks": require(`../../assets/images/jumping-jacks.png`),
   "push-ups": require(`../../assets/images/pushups.jpg`),
   "russian-twists": require(`../../assets/images/russian-twist.jpg`),
-  squats: require(`../../assets/images/squat.JPG`),
+  squats: require(`../../assets/images/squat.jpg`),
 }
 
 interface ExerciseTrackerScreenProps extends AppStackScreenProps<"ExerciseTracker"> {}
