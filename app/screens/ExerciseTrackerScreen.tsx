@@ -13,7 +13,6 @@ const images = {
   "jumping-jacks": require(`../../assets/images/jumping-jacks.png`),
   "push-ups": require(`../../assets/images/pushups.jpg`),
   "russian-twists": require(`../../assets/images/russian-twist.jpg`),
-  walking: require(`../../assets/images/walking.jpg`),
   squats: require(`../../assets/images/squat.JPG`),
 }
 
