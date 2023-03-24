@@ -1,0 +1,31 @@
+{
+    "project_info": {
+        "project_number": "389496573177",
+        "project_id": "beactive-fa860",
+        "storage_bucket": "beactive-fa860.appspot.com"
+    },
+    "client": [{
+        "client_info": {
+            "mobilesdk_app_id": "1:389496573177:android:c0ce432f2325d9ced12628",
+            "android_client_info": {
+                "package_name": "com.beactive"
+            }
+        },
+        "oauth_client": [{
+            "client_id": "389496573177-8m3tg6s1ohuhbdid8j88bkvtotgbh68g.apps.googleusercontent.com",
+            "client_type": 3
+        }],
+        "api_key": [{
+            "current_key": "AIzaSyBDtrSrASb_6YBwF37U2EHmf-9-OU-IPnw"
+        }],
+        "services": {
+            "appinvite_service": {
+                "other_platform_oauth_client": [{
+                    "client_id": "389496573177-8m3tg6s1ohuhbdid8j88bkvtotgbh68g.apps.googleusercontent.com",
+                    "client_type": 3
+                }]
+            }
+        }
+    }],
+    "configuration_version": "1"
+}
