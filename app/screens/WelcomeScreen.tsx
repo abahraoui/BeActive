@@ -1,31 +1,27 @@
 import { observer } from "mobx-react-lite"
-import React, { FC, useEffect } from "react"
+import React, { FC } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { Button, Text } from "../components"
 import { ExerciseTrackingState, useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useHeader } from "../utils/useHeader"
-import { getPushDataObject } from 'native-notify';
+import { getPushDataObject } from "native-notify"
 
 interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(
-  _props, // @demo remove-current-line
-) {
-  
-  // @demo remove-block-start
+export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(_props) {
   const { navigation } = _props
   const {
     profileStore: { logout, name },
     exercises,
     exerciseTrackerStore: { setCurrentExercise, setProp },
     loadExercises,
-    exerciseById
+    exerciseById,
   } = useStores()
 
-  let pushDataObject = getPushDataObject();
-  
+  const pushDataObject = getPushDataObject()
+
   useHeader({
     rightTx: "common.logOut",
     onRightPress: logout,
@@ -33,11 +29,11 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
 
   React.useLayoutEffect(() => {
     notifactionExercise()
-  }, [pushDataObject]);
-    
-    function notifactionExercise(){
+  }, [pushDataObject])
+
+  function notifactionExercise() {
     console.log("pushDataObject", pushDataObject)
-    if (pushDataObject.exerciseId){
+    if (pushDataObject.exerciseId) {
       const randomExercise = exerciseById(pushDataObject.exerciseId)
       console.log(randomExercise)
       setProp("state", ExerciseTrackingState.NOT_STARTED)
@@ -46,7 +42,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     }
   }
 
-  // @demo remove-block-end
   function goExercise() {
     loadExercises()
     const randomnum = Math.floor(Math.random() * exercises.length)
@@ -58,9 +53,9 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     navigation.push("ExerciseTracker")
   }
 
-  async  function sendNotification() {
+  async function sendNotification() {
     console.log("send notif")
-    
+
     loadExercises()
     const randomnum = Math.floor(Math.random() * exercises.length)
     console.log(JSON.stringify(exercises))
@@ -68,26 +63,32 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     console.log(randomExercise)
 
     fetch("https://app.nativenotify.com/api/notification", {
-      "headers": {
-        "accept": "application/json, text/plain, */*",
+      headers: {
+        accept: "application/json, text/plain, */*",
         "accept-language": "en-GB,en;q=0.9,hu;q=0.8,hu-HU;q=0.7,es-ES;q=0.6,es;q=0.5,en-US;q=0.4",
         "content-type": "application/json;charset=UTF-8",
-        "sec-ch-ua": "\"Google Chrome\";v=\"111\", \"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"111\"",
+        "sec-ch-ua": '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
         "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-ch-ua-platform": '"Windows"',
         "sec-fetch-dest": "empty",
         "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin"
+        "sec-fetch-site": "same-origin",
       },
-      "referrer": "https://app.nativenotify.com/in-app",
-      "referrerPolicy": "strict-origin-when-cross-origin",
-      "body": JSON.stringify({"appId":"6835","title":"Time for your daily exercise","body":"Today's exercise is "+randomExercise.name.toLowerCase(),"dateSent":"3-23-2023 10:54PM","pushData":JSON.stringify({exerciseId:randomExercise.id}),"bigPictureURL":""}),
-      "method": "POST",
-      "mode": "cors",
-      "credentials": "include"
-    });
+      referrer: "https://app.nativenotify.com/in-app",
+      referrerPolicy: "strict-origin-when-cross-origin",
+      body: JSON.stringify({
+        appId: "6835",
+        title: "Time for your daily exercise",
+        body: "Today's exercise is " + randomExercise.name.toLowerCase(),
+        dateSent: "3-23-2023 10:54PM",
+        pushData: JSON.stringify({ exerciseId: randomExercise.id }),
+        bigPictureURL: "",
+      }),
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    })
   }
-
 
   return (
     <View style={$container}>
