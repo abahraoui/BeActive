@@ -27,7 +27,7 @@ export const JumpingJacks: FC<JumpingJacksProps> = observer(function (props) {
 
     let previousX: number, previousY: number, previousZ: number
     let previousUpdate = 0
-    const shakeThreshold = 360
+    const shakeThreshold = 240
     // let count = 0
 
     setSubscription(
@@ -35,12 +35,12 @@ export const JumpingJacks: FC<JumpingJacksProps> = observer(function (props) {
         const { x, y, z } = data
 
         const currentTime = Date.now()
-        if (currentTime - previousUpdate > 100) {
+        if (currentTime - previousUpdate > 200) {
           const difference = currentTime - previousUpdate
           previousUpdate = currentTime
           const speed =
             (Math.abs(x + y + z - previousX - previousY - previousZ) / difference) * 10000
-          if (speed > shakeThreshold) {
+          if ((speed > shakeThreshold) && (y < 0) && (previousY > 0 )) {
             incrementCurrentCount()
             console.log("new currentCount", currentCount)
             playSound()

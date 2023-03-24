@@ -111,7 +111,7 @@ export class Api {
       {
         id: "russian-twists",
         name: "Russian twists",
-        description: "Have your phone in your hands in front of your chest. Turn only your torso to the left, and then to the right.",
+        description: "Lie down on the ground, and lift your torso to an approximate 45 degree angle from the ground. Hold your phone in your hands, in front of your chest. Turn chest to the left, then to the right, with your core tight at all times. If you wish to make the exercise a bit more difficult, lift your feet up, having only your glutes touching the ground. ",
         count: 10,
       },
     ]
