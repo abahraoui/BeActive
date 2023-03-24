@@ -14,6 +14,23 @@ import { PushUp } from "./PushUp"
 import CountDownTimer from "./Timer"
 import { Squat } from "./Squat"
 
+//Thanks to
+//       Shanqing Cai
+//       Nick Kreeger
+//       Stanley Bileschi
+//       Yannick Assogba
+//       Daniel Smilkov
+//       Nikhil Thorat
+//       Clément Beauseigneur
+//       Jing Jin
+//       David Soergel
+//       Ping Yu
+//       Kangyi Zhang
+//       Jen Person
+//       Na Li
+//       Marianne Linhares Monteiro
+// that have contributed to this project from TensorFlow: https://github.com/tensorflow/tfjs-models/tree/master/pose-detection
+
 // tslint:disable-next-line: variable-name
 const TensorCamera = cameraWithTensors(Camera)
 
@@ -303,7 +320,7 @@ export const PoseDetection: React.FC<PoseDetectionProps> = (props) => {
           cameraTextureWidth={0}
           cameraTextureHeight={0}
         />
-        {renderPose()}
+
         {startExercise()}
 
         {renderCameraTypeSwitcher()}

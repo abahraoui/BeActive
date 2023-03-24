@@ -6,7 +6,7 @@ const en = {
     logOut: "Log Out",
   },
   welcomeScreen: {
-    toExercise: "To exercise page",
+    toExercise: "Get Active!",
     sendNotification: "Send notification",
   },
   exerciseTrackerScreen: {
