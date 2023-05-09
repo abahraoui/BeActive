@@ -17,5 +17,5 @@ Run:
   ```npm run expo:start```  in the terminal
   
  Notifications might not work as you need an Expo account to run them.
-
+ 
 The project was developed and tested on Node version 16.18.0 and npm version 6.9.0.
