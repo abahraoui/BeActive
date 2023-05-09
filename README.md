@@ -1,6 +1,6 @@
 # Welcome!  👋
 
-![image](https://user-images.githubusercontent.com/106979580/237055646-bc1d5a81-500c-401f-b3c7-a6d0762da7fe.png)![image](https://user-images.githubusercontent.com/106979580/237055677-d5323630-aa38-4fc0-8fc2-b5bb352d0622.png)![image](https://user-images.githubusercontent.com/106979580/237055695-694807b7-8c9e-4809-bbc3-d199adda502e.png)![image](https://user-images.githubusercontent.com/106979580/237055713-851e1166-9b4c-470f-a0a0-bd626ad877e3.png)
+![image](https://user-images.githubusercontent.com/106979580/237055646-bc1d5a81-500c-401f-b3c7-a6d0762da7fe.png)       ![image](https://user-images.githubusercontent.com/106979580/237055677-d5323630-aa38-4fc0-8fc2-b5bb352d0622.png)       ![image](https://user-images.githubusercontent.com/106979580/237055695-694807b7-8c9e-4809-bbc3-d199adda502e.png)       ![image](https://user-images.githubusercontent.com/106979580/237055713-851e1166-9b4c-470f-a0a0-bd626ad877e3.png)
 
 BeActive is React Native mobile app 'prototype' made to study cross-platform mobile development as part of our curriculum.
 
