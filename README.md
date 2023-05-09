@@ -11,10 +11,10 @@ We chose to create an Expo-powered React Native application. Our frontend starte
 ## Running the project
 
 Install:
-  ‘npm install –legacy-peer-deps’ in the terminal
+  ```npm install –legacy-peer-deps``` in the terminal
   
 Run:
-  ‘npm run expo:start’  in the terminal
+  ```npm run expo:start```  in the terminal
   
  Notifications might not work as you need an Expo account to run them.
 
